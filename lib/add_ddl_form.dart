@@ -12,20 +12,38 @@ import 'utils.dart';
 
 class AddDDLForm extends StatefulWidget {
   GlobalKey<DDLListState> ddlListKey;
+  DateTime? dateTime;
+  String? title;
+  String? description;
+  String? platform;
+  int? ddlId;
+  bool change;
 
-  AddDDLForm(this.ddlListKey, {Key? key}) : super(key: key);
+  AddDDLForm(this.ddlListKey,
+      {Key? key,
+      this.dateTime,
+      this.title,
+      this.description,
+      this.platform,
+      this.ddlId,
+      this.change = false})
+      : super(key: key);
 
   @override
   State<AddDDLForm> createState() => _AddDDLFormState();
 }
 
 class _AddDDLFormState extends State<AddDDLForm> {
-  DateTime _dateTime = DateTime.now();
-  String title = '';
-  String description = '';
-  String platform = '';
+  DateTime? _dateTime;
+  String? title;
+  String? description;
+  String? platform;
   @override
   Widget build(BuildContext context) {
+    _dateTime ??= widget.dateTime ?? DateTime.now();
+    title ??= widget.title ?? '';
+    description ??= widget.description ?? '';
+    platform ??= widget.platform ?? '';
     GestureDetector timeWidget;
     timeWidget = GestureDetector(
         child: TextFormField(
@@ -39,7 +57,7 @@ class _AddDDLFormState extends State<AddDDLForm> {
           readOnly: true,
           controller: TextEditingController(
               text:
-                  '${addZero(_dateTime.year)}-${addZero(_dateTime.month)}-${addZero(_dateTime.day)} ${addZero(_dateTime.hour)}:${addZero(_dateTime.minute)}:${addZero(_dateTime.second)}'),
+                  '${addZero(_dateTime!.year)}-${addZero(_dateTime!.month)}-${addZero(_dateTime!.day)} ${addZero(_dateTime!.hour)}:${addZero(_dateTime!.minute)}:${addZero(_dateTime!.second)}'),
         ),
         onTap: () {
           Pickers.showDatePicker(
@@ -47,22 +65,22 @@ class _AddDDLFormState extends State<AddDDLForm> {
             mode: DateMode.YMDHMS,
             pickerStyle: NoTitleStyle(),
             selectDate: PDuration(
-              year: _dateTime.year,
-              month: _dateTime.month,
-              day: _dateTime.day,
-              hour: _dateTime.hour,
-              minute: _dateTime.minute,
-              second: _dateTime.second,
+              year: _dateTime!.year,
+              month: _dateTime!.month,
+              day: _dateTime!.day,
+              hour: _dateTime!.hour,
+              minute: _dateTime!.minute,
+              second: _dateTime!.second,
             ),
             onChanged: (PDuration selectDate) {
               setState(() {
                 _dateTime = DateTime(
-                  selectDate.year ?? _dateTime.year,
-                  selectDate.month ?? _dateTime.month,
-                  selectDate.day ?? _dateTime.day,
-                  selectDate.hour ?? _dateTime.hour,
-                  selectDate.minute ?? _dateTime.minute,
-                  selectDate.second ?? _dateTime.second,
+                  selectDate.year ?? _dateTime!.year,
+                  selectDate.month ?? _dateTime!.month,
+                  selectDate.day ?? _dateTime!.day,
+                  selectDate.hour ?? _dateTime!.hour,
+                  selectDate.minute ?? _dateTime!.minute,
+                  selectDate.second ?? _dateTime!.second,
                 );
               });
             },
@@ -86,6 +104,7 @@ class _AddDDLFormState extends State<AddDDLForm> {
                         border: OutlineInputBorder(),
                         labelText: 'DDL标题',
                         labelStyle: TextStyle(color: Colors.grey)),
+                    initialValue: title,
                     onChanged: (String value) {
                       title = value;
                     },
@@ -101,6 +120,7 @@ class _AddDDLFormState extends State<AddDDLForm> {
                         border: OutlineInputBorder(),
                         labelText: 'DDL详情',
                         labelStyle: TextStyle(color: Colors.grey)),
+                    initialValue: description,
                     onChanged: (String value) {
                       description = value;
                     },
@@ -114,6 +134,7 @@ class _AddDDLFormState extends State<AddDDLForm> {
                         border: OutlineInputBorder(),
                         labelText: 'DDL平台',
                         labelStyle: TextStyle(color: Colors.grey)),
+                    initialValue: platform,
                     onChanged: (String value) {
                       platform = value;
                     },
@@ -127,18 +148,21 @@ class _AddDDLFormState extends State<AddDDLForm> {
               SizedBox(
                   width: MediaQuery.of(context).size.width * 0.8,
                   child: ElevatedButton(
-                    child: const Text("添加", style: TextStyle(fontSize: 16)),
+                    child: Text(widget.change ? "修改" : "添加",
+                        style: const TextStyle(fontSize: 16)),
                     onPressed: () {
                       SharedPreferences.getInstance().then((value) {
                         String token = value.getString('token') ?? '';
-                        Uri uri = Uri.https('ddltest.jray.xyz', '/addddl');
+                        Uri uri = Uri.https('ddltest.jray.xyz',
+                            widget.change ? '/modddl' : '/addddl');
                         Map body = {
                           'token': token,
                           'subject': title,
                           'detail': description,
                           'platform': platform,
-                          'endTime':
-                              (_dateTime.millisecondsSinceEpoch / 1000).floor(),
+                          'endTime': (_dateTime!.millisecondsSinceEpoch / 1000)
+                              .floor(),
+                          'ddlId': widget.ddlId ?? 0
                         };
                         Dio().post(uri.toString(), data: body).then((value) {
                           if (value.statusCode == 200) {

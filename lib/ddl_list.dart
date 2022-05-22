@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_app/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'add_ddl_form.dart';
 import 'countdown_flip.dart';
 import 'countdown_timer.dart';
 
@@ -261,80 +263,122 @@ class DDLListState extends State<DDLList> {
                                               Color.fromRGBO(64, 158, 255, 1))),
                                 )),
                             Positioned(
-                                right: 0.1,
-                                child: TextButton(
-                                  onPressed: () {
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: const Text('提示'),
-                                            content: const Text('确定要删除该DDL吗？'),
-                                            actions: <Widget>[
-                                              TextButton(
-                                                child: const Text('取消'),
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                              ),
-                                              TextButton(
-                                                child: const Text('确定'),
-                                                onPressed: () {
-                                                  SharedPreferences
-                                                          .getInstance()
-                                                      .then((value) {
-                                                    String token =
-                                                        value.getString(
-                                                                'token') ??
-                                                            '';
-                                                    Uri uri = Uri.https(
-                                                        'ddltest.jray.xyz',
-                                                        '/delddl');
-                                                    Dio().post(uri.toString(),
-                                                        data: {
-                                                          'token': token,
-                                                          'ddlId': item['id'],
-                                                        }).then((value) {
+                                right: 10,
+                                child: SizedBox(
+                                    width: 50,
+                                    child: TextButton(
+                                      onPressed: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: const Text('提示'),
+                                                content:
+                                                    const Text('确定要删除该DDL吗？'),
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                    child: const Text('取消'),
+                                                    onPressed: () {
                                                       Navigator.of(context)
                                                           .pop();
-                                                      if (value.statusCode ==
-                                                          200) {
-                                                        Fluttertoast.cancel();
-                                                        Fluttertoast.showToast(
-                                                            msg: '删除成功',
-                                                            gravity:
-                                                                ToastGravity
-                                                                    .BOTTOM,
-                                                            textColor:
-                                                                Colors.white,
-                                                            backgroundColor:
-                                                                Colors.grey,
-                                                            fontSize: 16.0);
-                                                        reload(true);
-                                                      } else {
-                                                        Fluttertoast.cancel();
-                                                        Fluttertoast.showToast(
-                                                            msg:
-                                                                '网络错误：${value.statusCode}',
-                                                            gravity:
-                                                                ToastGravity
-                                                                    .BOTTOM,
-                                                            textColor:
-                                                                Colors.white,
-                                                            backgroundColor:
-                                                                Colors.grey,
-                                                            fontSize: 16.0);
-                                                      }
-                                                    });
-                                                  });
-                                                },
-                                              ),
-                                            ],
-                                          );
-                                        });
-                                  },
-                                  child: const Text('删除'),
-                                ))
+                                                    },
+                                                  ),
+                                                  TextButton(
+                                                    child: const Text('确定'),
+                                                    onPressed: () {
+                                                      SharedPreferences
+                                                              .getInstance()
+                                                          .then((value) {
+                                                        String token =
+                                                            value.getString(
+                                                                    'token') ??
+                                                                '';
+                                                        Uri uri = Uri.https(
+                                                            'ddltest.jray.xyz',
+                                                            '/delddl');
+                                                        Dio().post(
+                                                            uri.toString(),
+                                                            data: {
+                                                              'token': token,
+                                                              'ddlId':
+                                                                  item['id'],
+                                                            }).then((value) {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                          if (value
+                                                                  .statusCode ==
+                                                              200) {
+                                                            Fluttertoast
+                                                                .cancel();
+                                                            Fluttertoast.showToast(
+                                                                msg: '删除成功',
+                                                                gravity:
+                                                                    ToastGravity
+                                                                        .BOTTOM,
+                                                                textColor:
+                                                                    Colors
+                                                                        .white,
+                                                                backgroundColor:
+                                                                    Colors.grey,
+                                                                fontSize: 16.0);
+                                                            reload(true);
+                                                          } else {
+                                                            Fluttertoast
+                                                                .cancel();
+                                                            Fluttertoast.showToast(
+                                                                msg:
+                                                                    '网络错误：${value.statusCode}',
+                                                                gravity:
+                                                                    ToastGravity
+                                                                        .BOTTOM,
+                                                                textColor:
+                                                                    Colors
+                                                                        .white,
+                                                                backgroundColor:
+                                                                    Colors.grey,
+                                                                fontSize: 16.0);
+                                                          }
+                                                        });
+                                                      });
+                                                    },
+                                                  ),
+                                                ],
+                                              );
+                                            });
+                                      },
+                                      child: const Text('删除'),
+                                    ))),
+                            Positioned(
+                                right: 60,
+                                child: SizedBox(
+                                    width: 50,
+                                    child: TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            CupertinoPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        AddDDLForm(
+                                                          widget.key
+                                                              as GlobalKey<
+                                                                  DDLListState>,
+                                                          dateTime: DateTime
+                                                              .fromMillisecondsSinceEpoch(
+                                                                  item['endTime'] *
+                                                                      1000),
+                                                          title:
+                                                              item['subject'],
+                                                          description:
+                                                              item['detail'],
+                                                          platform:
+                                                              item['platform'],
+                                                          ddlId: item['id'],
+                                                          change: true,
+                                                        )));
+                                      },
+                                      child: const Text('修改'),
+                                    )))
                           ]
                         : [])),
             onTap: () async {
