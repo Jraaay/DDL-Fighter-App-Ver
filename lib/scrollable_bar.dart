@@ -113,6 +113,7 @@ class _ScrollableTabsState extends State<ScrollableTabs>
                     textColor: Colors.white,
                     backgroundColor: Colors.grey,
                     fontSize: 16.0);
+                _controller.animateTo(1);
               }
             });
           },
