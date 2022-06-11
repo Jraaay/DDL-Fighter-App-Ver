@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 创建一个最基础的MD页面
     return const MaterialApp(
       title: 'DDL Fighter',
       home: ScrollableTabs(),

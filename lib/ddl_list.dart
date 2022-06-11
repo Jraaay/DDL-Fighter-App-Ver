@@ -40,10 +40,12 @@ class DDLListState extends State<DDLList> {
       countdown.immediately = true;
       countdown.start();
       Uri uri = Uri.https('ddltest.jray.xyz', '/ddl');
+      // 请求获得ddl列表
       return FutureBuilder(
           future: prefs,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
+              // 如果有登录信息，则请求ddl完成信息列表
               return FutureBuilder<List<dynamic>>(
                 future: Dio()
                     .post(uri.toString(),
@@ -76,11 +78,13 @@ class DDLListState extends State<DDLList> {
                 },
               );
             } else {
+              // 如果没有登录信息，则返回loading
               return const CircularProgressIndicator(
                   color: Color.fromRGBO(64, 158, 255, 1), strokeWidth: 3);
             }
           });
     } else {
+      // 同上，但是不请求ddl列表
       return FutureBuilder(
           future: prefs,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -141,6 +145,7 @@ class DDLListState extends State<DDLList> {
   }
 
   Column myBuild({SharedPreferences? prefs}) {
+    // 创建ddl列表页面
     var children = <Widget>[];
     for (var item in ddlList) {
       children += [

@@ -15,6 +15,7 @@ class FlipNumText extends StatefulWidget {
 }
 
 class _MyBounceOutCurve1 extends Curve {
+  // 创建自定义动画
   const _MyBounceOutCurve1._();
 
   @override
@@ -39,6 +40,7 @@ class _MyBounceOutCurve1 extends Curve {
 }
 
 class _MyBounceOutCurve2 extends Curve {
+  // 创建自定义动画
   const _MyBounceOutCurve2._();
 
   @override

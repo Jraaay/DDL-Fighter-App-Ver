@@ -37,7 +37,9 @@ class _ScrollableTabsState extends State<ScrollableTabs>
     GlobalKey<DDLListState> ddlListKey = GlobalKey();
     Countdown countdown = Countdown();
     countdown.setGlobalKey(ddlListKey);
+    // 初始化数据
     return Scaffold(
+        // 创建底部导航栏
         bottomNavigationBar: Material(
             child: SizedBox(
                 height: 60.0,
@@ -70,14 +72,17 @@ class _ScrollableTabsState extends State<ScrollableTabs>
                     indicatorWeight: 0.1,
                   ),
                 ))),
+        // 创建内容区域
         body: Theme(
           data: ThemeData(
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
           ),
           child: TabBarView(
+            // 允许左右滑动切换页面
             controller: _controller,
             children: [
+              // 允许下拉刷新
               RefreshIndicator(
                 child: Container(
                     color: Colors.white,
@@ -100,6 +105,7 @@ class _ScrollableTabsState extends State<ScrollableTabs>
           onPressed: () {
             SharedPreferences.getInstance().then((value) {
               if ((value.getString('token') ?? '') != '') {
+                // 判断是否登录
                 Navigator.push(
                     context,
                     CupertinoPageRoute(

@@ -58,6 +58,7 @@ class Countdown {
         (ddlListKey.currentState?.ddlList.isNotEmpty ?? false)) {
       if (!setHeight) {
         List<dynamic> ddlList = ddlListKey.currentState?.ddlList ?? [];
+        // 对于每一个倒计时组件更新
         for (int i = 0; i < ddlList.length; i++) {
           Column column =
               (ddlListKey.currentState?.countdownList.children[i] as Column);

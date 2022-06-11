@@ -40,12 +40,15 @@ class _AddDDLFormState extends State<AddDDLForm> {
   String? platform;
   @override
   Widget build(BuildContext context) {
+    // 获取是否有传入的信息，因为复用了新增和修改DDL页面
     _dateTime ??= widget.dateTime ?? DateTime.now();
     title ??= widget.title ?? '';
     description ??= widget.description ?? '';
     platform ??= widget.platform ?? '';
     GestureDetector timeWidget;
+    // 定义一个用来选择时间的widget
     timeWidget = GestureDetector(
+        // 有一个用来显示时间的Text，并且点击时会弹出时间选择器
         child: TextFormField(
           enabled: false,
           decoration: const InputDecoration(
@@ -60,6 +63,7 @@ class _AddDDLFormState extends State<AddDDLForm> {
                   '${addZero(_dateTime!.year)}-${addZero(_dateTime!.month)}-${addZero(_dateTime!.day)} ${addZero(_dateTime!.hour)}:${addZero(_dateTime!.minute)}:${addZero(_dateTime!.second)}'),
         ),
         onTap: () {
+          // 弹出时间选择器
           Pickers.showDatePicker(
             context,
             mode: DateMode.YMDHMS,
@@ -73,6 +77,7 @@ class _AddDDLFormState extends State<AddDDLForm> {
               second: _dateTime!.second,
             ),
             onChanged: (PDuration selectDate) {
+              // 时间选择器变化时调用，更新时间
               setState(() {
                 _dateTime = DateTime(
                   selectDate.year ?? _dateTime!.year,
@@ -151,6 +156,7 @@ class _AddDDLFormState extends State<AddDDLForm> {
                     child: Text(widget.change ? "修改" : "添加",
                         style: const TextStyle(fontSize: 16)),
                     onPressed: () {
+                      // 点击添加按钮或修改按钮时，发送请求给后端处理
                       SharedPreferences.getInstance().then((value) {
                         String token = value.getString('token') ?? '';
                         Uri uri = Uri.https('ddltest.jray.xyz',
@@ -168,6 +174,7 @@ class _AddDDLFormState extends State<AddDDLForm> {
                           if (value.statusCode == 200) {
                             if (value.data['status'] == 'success') {
                               Fluttertoast.cancel();
+                              // 发送请求成功时，弹出提示框
                               Fluttertoast.showToast(
                                   msg: '添加成功',
                                   gravity: ToastGravity.BOTTOM,
@@ -180,6 +187,7 @@ class _AddDDLFormState extends State<AddDDLForm> {
                               showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
+                                    // 发送请求失败时，弹出提示框
                                     return AlertDialog(
                                       title: const Text('添加失败'),
                                       content: Text('${value.data["message"]}'),
@@ -195,6 +203,7 @@ class _AddDDLFormState extends State<AddDDLForm> {
                                   });
                             }
                           } else {
+                            // 发送请求失败时，弹出提示框
                             showDialog(
                                 context: context,
                                 builder: (BuildContext context) {

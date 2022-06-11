@@ -32,6 +32,7 @@ class _CountdownFlipState extends State<CountdownFlip> {
   @override
   Widget build(BuildContext context) {
     DateTime currentTime = DateTime.now();
+    // 计算剩余时间
     int dur =
         ((widget.endTime - currentTime.millisecondsSinceEpoch / 1000)).floor();
     List<int> durs = [
@@ -82,6 +83,7 @@ class _CountdownFlipState extends State<CountdownFlip> {
     for (int i = 0; i < '$day_1'.length; i++) {
       durs_1.add(int.parse('$day_1'.substring(i, i + 1)));
     }
+    // 生成倒计时，Stateless 和 Stateful 交替现实，保证动画完整性
     if (widget.status == 1) {
       return widget.endTime != 3376656000
           ? Row(
@@ -147,6 +149,7 @@ class _CountdownFlipState extends State<CountdownFlip> {
 
   @override
   void dispose() {
+    // 销毁时，取消定时器
     timer.cancel();
     super.dispose();
   }
